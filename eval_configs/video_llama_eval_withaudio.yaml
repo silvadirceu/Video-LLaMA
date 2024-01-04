@@ -30,7 +30,7 @@ model:
   end_sym: "###"
   low_resource: False
   frozen_llama_proj: False
-  llama_model: "ckpt/vicuna-7b/"  # ou "ckpt/vicuna-13b/" ou "ckpt/llama-2-7b-chat-hf" ou "ckpt/llama-2-13b-chat-hf"
+  llama_model: "ckpt/llama-2-7b-chat-hf" # ou "ckpt/vicuna-13b/"  ou "ckpt/llama-2-13b-chat-hf"
   imagebind_ckpt_path: "ckpt/imagebind_path/"
   ckpt: 'path/pretrained_visual_branch_ckpt'
   ckpt_2: 'path/pretrained_audio_branch_ckpt'
