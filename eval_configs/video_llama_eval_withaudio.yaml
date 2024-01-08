@@ -30,10 +30,10 @@ model:
   end_sym: "###"
   low_resource: False
   frozen_llama_proj: False
-  llama_model: "ckpt/llama-2-7b-chat-hf" # ou "ckpt/vicuna-13b/"  ou "ckpt/llama-2-13b-chat-hf"
-  imagebind_ckpt_path: "ckpt/imagebind_path/"
-  ckpt: 'path/pretrained_visual_branch_ckpt'
-  ckpt_2: 'path/pretrained_audio_branch_ckpt'
+  llama_model: huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-2-7B-Pretrained/snapshots/ckpt/llama-2-7b-chat-hf # "ckpt/llama-2-7b-chat-hf"  ou "ckpt/vicuna-13b/"  ou "ckpt/llama-2-13b-chat-hf"
+  imagebind_ckpt_path: "huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-2-7B-Pretrained/snapshots/ckpt"
+  ckpt: huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-2-7B-Pretrained/snapshots/ckpt/VL_LLaMA_2_7B_Pretrained.pth # Video-LLaMA/huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-Series/snapshots/path/pretrain_vicuna7b-v2.pth #'path/pretrained_visual_branch_ckpt'
+  ckpt_2: huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-2-7B-Pretrained/snapshots/ckpt/AL_LLaMA_2_7B_Pretrained.pth #huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-Series/snapshots/path/pretrain_vicuna7b_audiobranch.pth #'path/pretrained_audio_branch_ckpt'
   equip_audio_branch: True
   fusion_head_layers: 2
   max_frame_pos: 32
