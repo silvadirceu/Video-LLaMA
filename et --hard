@@ -1,0 +1,635 @@
+[1mdiff --git a/.gitignore b/.gitignore[m
+[1mindex 5a086a7..34f71fe 100644[m
+[1m--- a/.gitignore[m
+[1m+++ b/.gitignore[m
+[36m@@ -46,4 +46,4 @@[m [mvideo_llama/configs/datasets/instruct/valor_instruct.yaml[m
+ video_llama/configs/datasets/instruct/avsd_instruct.yaml[m
+ video_llama/datasets/datasets/audio_video_dataset.py[m
+ video_llama/datasets/builders/audio_backup_instruct_builder.py[m
+[31m-huggingface[m
+[41m+[m
+[1mdiff --git a/README copy.md b/README copy.md[m
+[1mnew file mode 100644[m
+[1mindex 0000000..22d8d03[m
+[1m--- /dev/null[m
+[1m+++ b/README copy.md[m	
+[36m@@ -0,0 +1,244 @@[m
+[32m+[m[32m<p align="center" width="100%">[m
+[32m+[m[32m<a target="_blank"><img src="figs/video_llama_logo.jpg" alt="Video-LLaMA" style="width: 50%; min-width: 200px; display: block; margin: auto;"></a>[m
+[32m+[m[32m</p>[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32m# Video-LLaMA: An Instruction-tuned Audio-Visual Language Model for Video Understanding[m
+[32m+[m[32m<!-- **Video-LLaMA: An Instruction-tuned Audio-Visual Language Model for Video Understanding** -->[m
+[32m+[m
+[32m+[m[32mThis is the repo for the Video-LLaMA project, which is working on empowering large language models with video and audio understanding capabilities.[m[41m [m
+[32m+[m
+[32m+[m[32m<div style='display:flex; gap: 0.25rem; '>[m
+[32m+[m[32m<a href='https://huggingface.co/spaces/DAMO-NLP-SG/Video-LLaMA'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Demo-blue'></a>[m
+[32m+[m[32m<a href='https://modelscope.cn/studios/damo/video-llama/summary'><img src='https://img.shields.io/badge/ModelScope-Demo-blueviolet'></a>[m[41m [m
+[32m+[m[32m<a href='https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-blue'></a>[m[41m [m
+[32m+[m[32m<a href='https://arxiv.org/abs/2306.02858'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>[m
+[32m+[m[32m</div>[m
+[32m+[m
+[32m+[m[32m## News[m
+[32m+[m[32m- [08.03]  **NOTE**: Release the LLaMA-2-Chat version of **Video-LLaMA**, including its pre-trained and instruction-tuned checkpoints. We uploaded full weights on Huggingface ([7B-Pretrained](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained),[7B-Finetuned](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-7B-Finetuned),[13B-Pretrained](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Pretrained),[13B-Finetuned](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Finetuned)), just for your convenience and secondary development. Welcome to try.[m
+[32m+[m[32m- [06.14]  **NOTE**: the current online interactive demo is primarily for English chatting and it may **NOT** be a good option to ask Chinese questions since Vicuna/LLaMA does not represent Chinese texts very well.[m[41m [m
+[32m+[m[32m- [06.13]  **NOTE**: the audio support is **ONLY** for Vicuna-7B by now although we have several VL checkpoints available for other decoders.[m
+[32m+[m[32m- [06.10]  **NOTE**: we have NOT updated the HF demo yet because the whole framework (with audio branch) cannot run normally on A10-24G. The current running demo is still the previous version of Video-LLaMA. We will fix this issue soon.[m
+[32m+[m[32m- [06.08] 🚀🚀 Release the checkpoints of the audio-supported Video-LLaMA. Documentation and example outputs are also updated.[m[41m    [m
+[32m+[m[32m- [05.22] 🚀🚀 Interactive demo online, try our Video-LLaMA (with **Vicuna-7B** as language decoder) at [Hugging Face](https://huggingface.co/spaces/DAMO-NLP-SG/Video-LLaMA) and [ModelScope](https://pre.modelscope.cn/studios/damo/video-llama/summary)!![m
+[32m+[m[32m- [05.22] ⭐️ Release **Video-LLaMA v2** built with Vicuna-7B[m
+[32m+[m[32m- [05.18] 🚀🚀 Support video-grounded chat in Chinese[m[41m [m
+[32m+[m[32m    - [**Video-LLaMA-BiLLA**](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-billa7b-zh.pth): we introduce [BiLLa-7B](https://huggingface.co/Neutralzz/BiLLa-7B-SFT) as language decoder and fine-tune the video-language aligned model (i.e., stage 1 model) with machine-translated [VideoChat](https://github.com/OpenGVLab/InternVideo/tree/main/Data/instruction_data) instructions.[m[41m   [m
+[32m+[m[32m    - [**Video-LLaMA-Ziya**](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-ziya13b-zh.pth): same with Video-LLaMA-BiLLA but the language decoder is changed to [Ziya-13B](https://huggingface.co/IDEA-CCNL/Ziya-LLaMA-13B-v1).[m[41m    [m
+[32m+[m[32m- [05.18] ⭐️ Create a Hugging Face [repo](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series) to store the model weights of all the variants of our Video-LLaMA.[m
+[32m+[m[32m- [05.15] ⭐️ Release [**Video-LLaMA v2**](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-vicuna13b-v2.pth): we use the training data provided by [VideoChat](https://github.com/OpenGVLab/InternVideo/tree/main/Data/instruction_data) to further enhance the instruction-following capability of Video-LLaMA.[m
+[32m+[m[32m- [05.07] Release the initial version of **Video-LLaMA**, including its pre-trained and instruction-tuned checkpoints.[m
+[32m+[m
+[32m+[m[32m<p align="center" width="100%">[m
+[32m+[m[32m<a target="_blank"><img src="figs/architecture_v2.png" alt="Video-LLaMA" style="width: 80%; min-width: 200px; display: block; margin: auto;"></a>[m
+[32m+[m[32m</p>[m
+[32m+[m
+[32m+[m[32m## Introduction[m
+[32m+[m
+[32m+[m
+[32m+[m[32m- Video-LLaMA is built on top of [BLIP-2](https://github.com/salesforce/LAVIS/tree/main/projects/blip2) and [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4). It is composed of two core components: (1) Vision-Language (VL) Branch and (2) Audio-Language (AL) Branch.[m
+[32m+[m[32m  - **VL Branch** (Visual encoder: ViT-G/14 + BLIP-2 Q-Former)[m
+[32m+[m[32m    - A two-layer video Q-Former and a frame embedding layer (applied to the embeddings of each frame) are introduced to compute video representations.[m[41m [m
+[32m+[m[32m    - We train VL Branch on the Webvid-2M video caption dataset with a video-to-text generation task. We also add image-text pairs (~595K image captions from [LLaVA](https://github.com/haotian-liu/LLaVA)) into the pre-training dataset to enhance the understanding of static visual concepts.[m
+[32m+[m[32m    - After pre-training, we further fine-tune our VL Branch using the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything).[m[41m [m
+[32m+[m[32m  - **AL Branch** (Audio encoder: ImageBind-Huge)[m[41m [m
+[32m+[m[32m    - A two-layer audio Q-Former and a audio segment embedding layer (applied to the embedding of each audio segment) are introduced to compute audio representations.[m
+[32m+[m[32m    - As the used audio encoder (i.e., ImageBind) is already aligned across multiple modalities, we train AL Branch on video/image instrucaption data only, just to connect the output of ImageBind to language decoder.[m[41m    [m
+[32m+[m[32m- Note that only the Video/Audio Q-Former, positional embedding layers and the linear layers are trainable during cross-modal training.[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32m## Example Outputs[m
+[32m+[m
+[32m+[m
+[32m+[m[32m- **Video with background sound**[m
+[32m+[m
+[32m+[m[32m<p float="left">[m
+[32m+[m[32m    <img src="https://github.com/DAMO-NLP-SG/Video-LLaMA/assets/18526640/7f7bddb2-5cf1-4cf4-bce3-3fa67974cbb3" style="width: 45%; margin: auto;">[m
+[32m+[m[32m    <img src="https://github.com/DAMO-NLP-SG/Video-LLaMA/assets/18526640/ec76be04-4aa9-4dde-bff2-0a232b8315e0" style="width: 45%; margin: auto;">[m
+[32m+[m[32m</p>[m
+[32m+[m
+[32m+[m
+[32m+[m[32m- **Video without sound effects**[m
+[32m+[m[32m<p float="left">[m
+[32m+[m[32m    <img src="https://github.com/DAMO-NLP-SG/Video-LLaMA/assets/18526640/539ea3cc-360d-4b2c-bf86-5505096df2f7" style="width: 45%; margin: auto;">[m
+[32m+[m[32m    <img src="https://github.com/DAMO-NLP-SG/Video-LLaMA/assets/18526640/7304ad6f-1009-46f1-aca4-7f861b636363" style="width: 45%; margin: auto;">[m
+[32m+[m[32m</p>[m
+[32m+[m
+[32m+[m[32m- **Static image**[m
+[32m+[m[32m<p float="left">[m
+[32m+[m[32m    <img src="https://github.com/DAMO-NLP-SG/Video-LLaMA/assets/18526640/a146c169-8693-4627-96e6-f885ca22791f" style="width: 45%; margin: auto;">[m
+[32m+[m[32m    <img src="https://github.com/DAMO-NLP-SG/Video-LLaMA/assets/18526640/66fc112d-e47e-4b66-b9bc-407f8d418b17" style="width: 45%; margin: auto;">[m
+[32m+[m[32m</p>[m
+[32m+[m
+[32m+[m
+[32m+[m
+[32m+[m[32m## Pre-trained & Fine-tuned Checkpoints[m
+[32m+[m
+[32m+[m[32mThe following checkpoints store learnable parameters (positional embedding layers, Video/Audio Q-former and linear projection layers) only.[m
+[32m+[m
+[32m+[m[32m#### Vision-Language Branch[m
+[32m+[m[32m| Checkpoint       | Link | Note |[m
+[32m+[m[32m|:------------|-------------|-------------|[m
+[32m+[m[32m| pretrain-vicuna7b    | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain_vicuna7b-v2.pth)       | Pre-trained on WebVid (2.5M video-caption pairs) and LLaVA-CC3M (595k image-caption pairs) |[m
+[32m+[m[32m| finetune-vicuna7b-v2 | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-vicuna7b-v2.pth) | Fine-tuned on the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything)|[m
+[32m+[m[32m| pretrain-vicuna13b    | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain-vicuna13b.pth)       | Pre-trained on WebVid (2.5M video-caption pairs) and LLaVA-CC3M (595k image-caption pairs) |[m
+[32m+[m[32m| finetune-vicuna13b-v2 | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-vicuna13b-v2.pth) | Fine-tuned on the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything)|[m
+[32m+[m[32m| pretrain-ziya13b-zh | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain-ziya13b-zh.pth) | Pre-trained with Chinese LLM [Ziya-13B](https://huggingface.co/IDEA-CCNL/Ziya-LLaMA-13B-v1) |[m
+[32m+[m[32m| finetune-ziya13b-zh | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-ziya13b-zh.pth) | Fine-tuned on machine-translated [VideoChat](https://github.com/OpenGVLab/Ask-Anything) instruction-following dataset (in Chinese)|[m
+[32m+[m[32m| pretrain-billa7b-zh | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain-billa7b-zh.pth) | Pre-trained with Chinese LLM [BiLLA-7B](https://huggingface.co/IDEA-CCNL/Ziya-LLaMA-13B-v1) |[m
+[32m+[m[32m| finetune-billa7b-zh | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-billa7b-zh.pth) | Fine-tuned on machine-translated [VideoChat](https://github.com/OpenGVLab/Ask-Anything) instruction-following dataset (in Chinese) |[m
+[32m+[m
+[32m+[m[32m#### Audio-Language Branch[m
+[32m+[m[32m| Checkpoint       | Link | Note |[m
+[32m+[m[32m|:------------|-------------|-------------|[m
+[32m+[m[32m| pretrain-vicuna7b    | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain_vicuna7b_audiobranch.pth)       | Pre-trained on WebVid (2.5M video-caption pairs) and LLaVA-CC3M (595k image-caption pairs) |[m
+[32m+[m[32m| finetune-vicuna7b-v2 | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune_vicuna7b_audiobranch.pth) | Fine-tuned on the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything)|[m
+[32m+[m
+[32m+[m
+[32m+[m[32m## Usage[m
+[32m+[m[32m#### Enviroment Preparation[m[41m [m
+[32m+[m
+[32m+[m[32mFirst, install ffmpeg.[m
+[32m+[m[32m```[m
+[32m+[m[32mapt update[m
+[32m+[m[32mapt install ffmpeg[m
+[32m+[m[32m```[m
+[32m+[m[32mThen, create a conda environment:[m
+[32m+[m[32m```[m
+[32m+[m[32mconda env create -f environment.yml[m
+[32m+[m[32mconda activate videollama[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m
+[32m+[m[32m## Prerequisites[m
+[32m+[m
+[32m+[m[32mBefore using the repository, make sure you have obtained the following checkpoints:[m
+[32m+[m
+[32m+[m[32m#### Pre-trained Language Decoder[m
+[32m+[m
+[32m+[m[32m- Get the original LLaMA weights in the Hugging Face format by following the instructions [here](https://huggingface.co/docs/transformers/main/model_doc/llama).[m
+[32m+[m[32m- Download Vicuna delta weights :point_right: [[7B](https://huggingface.co/lmsys/vicuna-7b-delta-v0)][[13B](https://huggingface.co/lmsys/vicuna-13b-delta-v0)] (Note: we use **v0 weights** instead of v1.1 weights).[m[41m [m
+[32m+[m[32m- Use the following command to add delta weights to the original LLaMA weights to obtain the Vicuna weights:[m
+[32m+[m
+[32m+[m[32m```[m
+[32m+[m[32mpython apply_delta.py \[m
+[32m+[m[32m    --base /path/to/llama-13b \[m
+[32m+[m[32m    --target /output/path/to/vicuna-13b --delta /path/to/vicuna-13b-delta[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m#### Pre-trained Visual Encoder in Vision-Language Branch[m
+[32m+[m[32m- Download the MiniGPT-4 model (trained linear layer) from this [link](https://drive.google.com/file/d/1a4zLvaiDBr-36pasffmgpvH5P7CKmpze/view).[m
+[32m+[m
+[32m+[m[32m#### Pre-trained Audio Encoder in Audio-Language Branch[m
+[32m+[m[32m- Download the weight of ImageBind from this [link](https://github.com/facebookresearch/ImageBind).[m[41m [m
+[32m+[m
+[32m+[m[32m## Download Learnable Weights[m
+[32m+[m[32mUse `git-lfs` to download the learnable weights of our Video-LLaMA (i.e., positional embedding layer + Q-Former + linear projection layer):[m
+[32m+[m[32m```bash[m
+[32m+[m[32mgit lfs install[m
+[32m+[m[32mgit clone https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series[m
+[32m+[m[32m```[m
+[32m+[m[32mThe above commands will download the model weights of all the Video-LLaMA variants. For sure, you can choose to download the weights on demand. For example, if you want to run Video-LLaMA with Vicuna-7B as language decoder locally, then:[m
+[32m+[m[32m```bash[m
+[32m+[m[32mwget https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-vicuna7b-v2.pth[m
+[32m+[m[32mwget https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune_vicuna7b_audiobranch.pth[m
+[32m+[m[32m```[m
+[32m+[m[32mshould meet the requirement.[m
+[32m+[m
+[32m+[m[32m## How to Run Demo Locally[m
+[32m+[m
+[32m+[m[32mFirstly, set the `llama_model`, `imagebind_ckpt_path`, `ckpt` and `ckpt_2` in [eval_configs/video_llama_eval_withaudio.yaml](./eval_configs/video_llama_eval_withaudio.yaml).[m
+[32m+[m[32mThen run the script:[m
+[32m+[m[32m```[m
+[32m+[m[32mpython demo_audiovideo.py \[m
+[32m+[m[32m    --cfg-path eval_configs/video_llama_eval_withaudio.yaml --model_type vicuna --gpu-id 0[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m## Training[m
+[32m+[m
+[32m+[m[32mThe training of each cross-modal branch (i.e., VL branch or AL branch) in Video-LLaMA consists of two stages,[m
+[32m+[m
+[32m+[m[32m1. Pre-training on the [Webvid-2.5M](https://github.com/m-bain/webvid) video caption dataset and [LLaVA-CC3M]((https://github.com/haotian-liu/LLaVA)) image caption dataset.[m
+[32m+[m
+[32m+[m[32m2. Fine-tuning using the image-based instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4)/[LLaVA](https://github.com/haotian-liu/LLaVA) and the video-based instruction-tuning data from [VideoChat](https://github.com/OpenGVLab/Ask-Anything).[m
+[32m+[m
+[32m+[m[32m### 1. Pre-training[m
+[32m+[m[32m#### Data Preparation[m
+[32m+[m[32mDownload the metadata and video following the instruction from the official Github repo of [Webvid](https://github.com/m-bain/webvid).[m
+[32m+[m[32mThe folder structure of the dataset is shown below:[m
+[32m+[m[32m```[m
+[32m+[m[32m|webvid_train_data[m
+[32m+[m[32m|──filter_annotation[m
+[32m+[m[32m|────0.tsv[m
+[32m+[m[32m|──videos[m
+[32m+[m[32m|────000001_000050[m
+[32m+[m[32m|──────1066674784.mp4[m
+[32m+[m[32m```[m
+[32m+[m[32m```[m
+[32m+[m[32m|cc3m[m
+[32m+[m[32m|──filter_cap.json[m
+[32m+[m[32m|──image[m
+[32m+[m[32m|────GCC_train_000000000.jpg[m
+[32m+[m[32m|────...[m
+[32m+[m[32m```[m
+[32m+[m[32m#### Script[m
+[32m+[m[32mConfig the the checkpoint and dataset paths in [video_llama_stage1_pretrain.yaml](./train_configs/video_llama_stage1_pretrain.yaml).[m
+[32m+[m[32mRun the script:[m
+[32m+[m[32m```[m
+[32m+[m[32mconda activate videollama[m
+[32m+[m[32mtorchrun --nproc_per_node=8 train.py --cfg-path  ./train_configs/video_llama_stage1_pretrain.yaml[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m### 2. Instruction Fine-tuning[m
+[32m+[m[32m#### Data[m
+[32m+[m[32mFor now, the fine-tuning dataset consists of:[m
+[32m+[m[32m* 150K image-based instructions from LLaVA [[link](https://huggingface.co/datasets/liuhaotian/LLaVA-Instruct-150K/raw/main/llava_instruct_150k.json)][m
+[32m+[m[32m* 3K image-based instructions from MiniGPT-4 [[link](https://github.com/Vision-CAIR/MiniGPT-4/blob/main/dataset/README_2_STAGE.md)][m
+[32m+[m[32m* 11K video-based instructions from VideoChat [[link](https://github.com/OpenGVLab/InternVideo/tree/main/Data/instruction_data)][m
+[32m+[m
+[32m+[m[32m#### Script[m
+[32m+[m[32mConfig the checkpoint and dataset paths in [video_llama_stage2_finetune.yaml](./train_configs/video_llama_stage2_finetune.yaml).[m
+[32m+[m[32m```[m
+[32m+[m[32mconda activate videollama[m
+[32m+[m[32mtorchrun --nproc_per_node=8 train.py --cfg-path  ./train_configs/video_llama_stage2_finetune.yaml[m
+[32m+[m[32m```[m
+[32m+[m
+[32m+[m[32m## Recommended GPUs[m
+[32m+[m[32m* Pre-training: 8xA100 (80G)[m
+[32m+[m[32m* Instruction-tuning: 8xA100 (80G)[m
+[32m+[m[32m* Inference: 1xA100 (40G/80G) or 1xA6000[m
+[32m+[m
+[32m+[m[32m## Acknowledgement[m
+[32m+[m[32mWe are grateful for the following awesome projects our Video-LLaMA arising from:[m
+[32m+[m[32m* [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4): Enhancing Vision-language Understanding with Advanced Large Language Models[m
+[32m+[m[32m* [FastChat](https://github.com/lm-sys/FastChat): An Open Platform for Training, Serving, and Evaluating Large Language Model based Chatbots[m
+[32m+[m[32m* [BLIP-2](https://github.com/salesforce/LAVIS/tree/main/projects/blip2): Bootstrapping Language-Image Pre-training with Frozen Image Encoders and Large Language Models[m[41m [m
+[32m+[m[32m* [EVA-CLIP](https://github.com/baaivision/EVA/tree/master/EVA-CLIP): Improved Training Techniques for CLIP at Scale[m
+[32m+[m[32m* [ImageBind](https://github.com/facebookresearch/ImageBind): One Embedding Space To Bind Them All[m
+[32m+[m[32m* [LLaMA](https://github.com/facebookresearch/llama): Open and Efficient Foundation Language Models[m
+[32m+[m[32m* [VideoChat](https://github.com/OpenGVLab/Ask-Anything): Chat-Centric Video Understanding[m
+[32m+[m[32m* [LLaVA](https://github.com/haotian-liu/LLaVA): Large Language and Vision Assistant[m
+[32m+[m[32m* [WebVid](https://github.com/m-bain/webvid): A Large-scale Video-Text dataset[m
+[32m+[m[32m* [mPLUG-Owl](https://github.com/X-PLUG/mPLUG-Owl/tree/main): Modularization Empowers Large Language Models with Multimodality[m
+[32m+[m
+[32m+[m[32mThe logo of Video-LLaMA is generated by [Midjourney](https://www.midjourney.com/).[m
+[32m+[m
+[32m+[m
+[32m+[m[32m## Term of Use[m
+[32m+[m[32mOur Video-LLaMA is just a research preview intended for non-commercial use only. You must **NOT** use our Video-LLaMA for any illegal, harmful, violent, racist, or sexual purposes. You are strictly prohibited from engaging in any activity that will potentially violate these guidelines.[m[41m [m
+[32m+[m
+[32m+[m[32m## Citation[m
+[32m+[m[32mIf you find our project useful, hope you can star our repo and cite our paper as follows:[m
+[32m+[m[32m```[m
+[32m+[m[32m@article{damonlpsg2023videollama,[m
+[32m+[m[32m  author = {Zhang, Hang and Li, Xin and Bing, Lidong},[m
+[32m+[m[32m  title = {Video-LLaMA: An Instruction-tuned Audio-Visual Language Model for Video Understanding},[m
+[32m+[m[32m  year = 2023,[m
+[32m+[m[32m  journal = {arXiv preprint arXiv:2306.02858},[m
+[32m+[m[32m  url = {https://arxiv.org/abs/2306.02858}[m
+[32m+[m[32m}[m
+[32m+[m[32m```[m
+[32m+[m
+[1mdiff --git a/README.md b/README.md[m
+[1mindex df0d230..91fbe2c 100644[m
+[1m--- a/README.md[m
+[1m+++ b/README.md[m
+[36m@@ -10,26 +10,24 @@[m
+ This is the repo for the Video-LLaMA project, which is working on empowering large language models with video and audio understanding capabilities. [m
+ [m
+ <div style='display:flex; gap: 0.25rem; '>[m
+[31m-<a href='https://modelscope.cn/studios/damo/video-llama/summary'><img src='https://img.shields.io/badge/ModelScope-Demo-blueviolet'></a>[m
+[31m-<a href='https://www.modelscope.cn/models/damo/videollama_7b_llama2_finetuned/summary'><img src='https://img.shields.io/badge/ModelScope-Checkpoint-blueviolet'></a>[m
+ <a href='https://huggingface.co/spaces/DAMO-NLP-SG/Video-LLaMA'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Demo-blue'></a>[m
+[31m-<a href='https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-7B-Finetuned'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Checkpoint-blue'></a> [m
+[32m+[m[32m<a href='https://modelscope.cn/studios/damo/video-llama/summary'><img src='https://img.shields.io/badge/ModelScope-Demo-blueviolet'></a>[m[41m [m
+[32m+[m[32m<a href='https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Hugging%20Face-Model-blue'></a>[m[41m [m
+ <a href='https://arxiv.org/abs/2306.02858'><img src='https://img.shields.io/badge/Paper-PDF-red'></a>[m
+ </div>[m
+ [m
+ ## News[m
+[31m-- [11.14] ⭐️ The current README file is for **Video-LLaMA-2** (LLaMA-2-Chat as language decoder) only, instructions for using the previous version of Video-LLaMA (Vicuna as language decoder) can be found at [here](https://github.com/DAMO-NLP-SG/Video-LLaMA/blob/main/README_Vicuna.md).[m
+ - [08.03] 🚀🚀 Release **Video-LLaMA-2** with [Llama-2-7B/13B-Chat](https://huggingface.co/meta-llama) as language decoder[m
+     - **NO** delta weights and separate Q-former weights anymore, full weights to run Video-LLaMA are all here :point_right: [[7B](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-7B-Finetuned)][[13B](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Finetuned)] [m
+     - Allow further customization starting from our pre-trained checkpoints [[7B-Pretrained](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained)] [[13B-Pretrained](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Pretrained)][m
+[31m-- [06.14]  **NOTE**: The current online interactive demo is primarily for English chatting and it may **NOT** be a good option to ask Chinese questions since Vicuna/LLaMA does not represent Chinese texts very well. [m
+[31m-- [06.13]  **NOTE**: The audio support is **ONLY** for Vicuna-7B by now although we have several VL checkpoints available for other decoders.[m
+[31m-- [06.10]  **NOTE**: We have NOT updated the HF demo yet because the whole framework (with the audio branch) cannot run normally on A10-24G. The current running demo is still the previous version of Video-LLaMA. We will fix this issue soon.[m
+[32m+[m[32m- [06.14]  **NOTE**: the current online interactive demo is primarily for English chatting and it may **NOT** be a good option to ask Chinese questions since Vicuna/LLaMA does not represent Chinese texts very well.[m[41m [m
+[32m+[m[32m- [06.13]  **NOTE**: the audio support is **ONLY** for Vicuna-7B by now although we have several VL checkpoints available for other decoders.[m
+[32m+[m[32m- [06.10]  **NOTE**: we have NOT updated the HF demo yet because the whole framework (with the audio branch) cannot run normally on A10-24G. The current running demo is still the previous version of Video-LLaMA. We will fix this issue soon.[m
+ - [06.08] 🚀🚀 Release the checkpoints of the audio-supported Video-LLaMA. Documentation and example outputs are also updated.    [m
+ - [05.22] 🚀🚀 Interactive demo online, try our Video-LLaMA (with **Vicuna-7B** as language decoder) at [Hugging Face](https://huggingface.co/spaces/DAMO-NLP-SG/Video-LLaMA) and [ModelScope](https://pre.modelscope.cn/studios/damo/video-llama/summary)!![m
+ - [05.22] ⭐️ Release **Video-LLaMA v2** built with Vicuna-7B[m
+ - [05.18] 🚀🚀 Support video-grounded chat in Chinese [m
+[31m-    - [**Video-LLaMA-BiLLA**](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-billa7b-zh.pth): we introduce [BiLLa-7B-SFT](https://huggingface.co/Neutralzz/BiLLa-7B-SFT) as language decoder and fine-tune the video-language aligned model (i.e., stage 1 model) with machine-translated [VideoChat](https://github.com/OpenGVLab/InternVideo/tree/main/Data/instruction_data) instructions.   [m
+[32m+[m[32m    - [**Video-LLaMA-BiLLA**](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-billa7b-zh.pth): we introduce [BiLLa-7B](https://huggingface.co/Neutralzz/BiLLa-7B-SFT) as language decoder and fine-tune the video-language aligned model (i.e., stage 1 model) with machine-translated [VideoChat](https://github.com/OpenGVLab/InternVideo/tree/main/Data/instruction_data) instructions.[m[41m   [m
+     - [**Video-LLaMA-Ziya**](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-ziya13b-zh.pth): same with Video-LLaMA-BiLLA but the language decoder is changed to [Ziya-13B](https://huggingface.co/IDEA-CCNL/Ziya-LLaMA-13B-v1).    [m
+ - [05.18] ⭐️ Create a Hugging Face [repo](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series) to store the model weights of all the variants of our Video-LLaMA.[m
+ - [05.15] ⭐️ Release [**Video-LLaMA v2**](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-vicuna13b-v2.pth): we use the training data provided by [VideoChat](https://github.com/OpenGVLab/InternVideo/tree/main/Data/instruction_data) to further enhance the instruction-following capability of Video-LLaMA.[m
+[36m@@ -48,9 +46,9 @@[m [mThis is the repo for the Video-LLaMA project, which is working on empowering lar[m
+     - We train VL Branch on the Webvid-2M video caption dataset with a video-to-text generation task. We also add image-text pairs (~595K image captions from [LLaVA](https://github.com/haotian-liu/LLaVA)) into the pre-training dataset to enhance the understanding of static visual concepts.[m
+     - After pre-training, we further fine-tune our VL Branch using the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything). [m
+   - **AL Branch** (Audio encoder: ImageBind-Huge) [m
+[31m-    - A two-layer audio Q-Former and an audio segment embedding layer (applied to the embedding of each audio segment) are introduced to compute audio representations.[m
+[31m-    - As the used audio encoder (i.e., ImageBind) is already aligned across multiple modalities, we train AL Branch on video/image instruction data only, just to connect the output of ImageBind to the language decoder.    [m
+[31m-- Only the Video/Audio Q-Former, positional embedding layers, and linear layers are trainable during cross-modal training.[m
+[32m+[m[32m    - A two-layer audio Q-Former and a audio segment embedding layer (applied to the embedding of each audio segment) are introduced to compute audio representations.[m
+[32m+[m[32m    - As the used audio encoder (i.e., ImageBind) is already aligned across multiple modalities, we train AL Branch on video/image instrucaption data only, just to connect the output of ImageBind to language decoder.[m[41m    [m
+[32m+[m[32m- Note that only the Video/Audio Q-Former, positional embedding layers and the linear layers are trainable during cross-modal training.[m
+ [m
+ [m
+ [m
+[36m@@ -81,20 +79,29 @@[m [mThis is the repo for the Video-LLaMA project, which is working on empowering lar[m
+ [m
+ ## Pre-trained & Fine-tuned Checkpoints[m
+ [m
+[31m-~~The following checkpoints store learnable parameters (positional embedding layers, Video/Audio Q-former, and linear projection layers) only.~~[m
+[31m-[m
+[31m-The following checkpoints are the full weights (visual encoder + audio encoder + Q-Formers + language decoder) to launch Video-LLaMA:[m
+[32m+[m[32mThe following checkpoints store learnable parameters (positional embedding layers, Video/Audio Q-former and linear projection layers) only.[m
+ [m
+[32m+[m[32m#### Vision-Language Branch[m
+[32m+[m[32m| Checkpoint       | Link | Note |[m
+[32m+[m[32m|:------------|-------------|-------------|[m
+[32m+[m[32m| pretrain-vicuna7b    | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain_vicuna7b-v2.pth)       | Pre-trained on WebVid (2.5M video-caption pairs) and LLaVA-CC3M (595k image-caption pairs) |[m
+[32m+[m[32m| finetune-vicuna7b-v2 | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-vicuna7b-v2.pth) | Fine-tuned on the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything)|[m
+[32m+[m[32m| pretrain-vicuna13b    | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain-vicuna13b.pth)       | Pre-trained on WebVid (2.5M video-caption pairs) and LLaVA-CC3M (595k image-caption pairs) |[m
+[32m+[m[32m| finetune-vicuna13b-v2 | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-vicuna13b-v2.pth) | Fine-tuned on the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything)|[m
+[32m+[m[32m| pretrain-ziya13b-zh | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain-ziya13b-zh.pth) | Pre-trained with Chinese LLM [Ziya-13B](https://huggingface.co/IDEA-CCNL/Ziya-LLaMA-13B-v1) |[m
+[32m+[m[32m| finetune-ziya13b-zh | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-ziya13b-zh.pth) | Fine-tuned on machine-translated [VideoChat](https://github.com/OpenGVLab/Ask-Anything) instruction-following dataset (in Chinese)|[m
+[32m+[m[32m| pretrain-billa7b-zh | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain-billa7b-zh.pth) | Pre-trained with Chinese LLM [BiLLA-7B](https://huggingface.co/IDEA-CCNL/Ziya-LLaMA-13B-v1) |[m
+[32m+[m[32m| finetune-billa7b-zh | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-billa7b-zh.pth) | Fine-tuned on machine-translated [VideoChat](https://github.com/OpenGVLab/Ask-Anything) instruction-following dataset (in Chinese) |[m
+[32m+[m
+[32m+[m[32m#### Audio-Language Branch[m
+ | Checkpoint       | Link | Note |[m
+[31m-|:------------------|-------------|-------------|[m
+[31m-| Video-LLaMA-2-7B-Pretrained    | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Finetuned/tree/main)       | Pre-trained on WebVid (2.5M video-caption pairs) and LLaVA-CC3M (595k image-caption pairs) |[m
+[31m-| Video-LLaMA-2-7B-Finetuned | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-7B-Finetuned/tree/main) | Fine-tuned on the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything)|[m
+[31m-| Video-LLaMA-2-13B-Pretrained    | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Pretrained/tree/main)       | Pre-trained on WebVid (2.5M video-caption pairs) and LLaVA-CC3M (595k image-caption pairs) |[m
+[31m-| Video-LLaMA-2-13B-Finetuned | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Finetuned/tree/main) | Fine-tuned on the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything)|[m
+[32m+[m[32m|:------------|-------------|-------------|[m
+[32m+[m[32m| pretrain-vicuna7b    | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/pretrain_vicuna7b_audiobranch.pth)       | Pre-trained on WebVid (2.5M video-caption pairs) and LLaVA-CC3M (595k image-caption pairs) |[m
+[32m+[m[32m| finetune-vicuna7b-v2 | [link](https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune_vicuna7b_audiobranch.pth) | Fine-tuned on the instruction-tuning data from [MiniGPT-4](https://github.com/Vision-CAIR/MiniGPT-4), [LLaVA](https://github.com/haotian-liu/LLaVA) and [VideoChat](https://github.com/OpenGVLab/Ask-Anything)|[m
+ [m
+ [m
+ ## Usage[m
+[31m-#### Environment Preparation [m
+[32m+[m[32m#### Enviroment Preparation[m[41m [m
+ [m
+ First, install ffmpeg.[m
+ ```[m
+[36m@@ -110,13 +117,42 @@[m [mconda activate videollama[m
+ [m
+ ## Prerequisites[m
+ [m
+[31m-~~Before using the repository, make sure you have obtained the following checkpoints:~~[m
+[32m+[m[32mBefore using the repository, make sure you have obtained the following checkpoints:[m
+[32m+[m
+[32m+[m[32m#### Pre-trained Language Decoder[m
+[32m+[m
+[32m+[m[32m- Get the original LLaMA weights in the Hugging Face format by following the instructions [here](https://huggingface.co/docs/transformers/main/model_doc/llama).[m
+[32m+[m[32m- Download Vicuna delta weights :point_right: [[7B](https://huggingface.co/lmsys/vicuna-7b-delta-v0)][[13B](https://huggingface.co/lmsys/vicuna-13b-delta-v0)] (Note: we use **v0 weights** instead of v1.1 weights).[m[41m [m
+[32m+[m[32m- Use the following command to add delta weights to the original LLaMA weights to obtain the Vicuna weights:[m
+[32m+[m
+[32m+[m[32m```[m
+[32m+[m[32mpython apply_delta.py \[m
+[32m+[m[32m    --base /path/to/llama-13b \[m
+[32m+[m[32m    --target /output/path/to/vicuna-13b --delta /path/to/vicuna-13b-delta[m
+[32m+[m[32m```[m
+ [m
+[31m-DON'T have to do anything now!![m
+[32m+[m[32m#### Pre-trained Visual Encoder in Vision-Language Branch[m
+[32m+[m[32m- Download the MiniGPT-4 model (trained linear layer) from this [link](https://drive.google.com/file/d/1a4zLvaiDBr-36pasffmgpvH5P7CKmpze/view).[m
+[32m+[m
+[32m+[m[32m#### Pre-trained Audio Encoder in Audio-Language Branch[m
+[32m+[m[32m- Download the weight of ImageBind from this [link](https://github.com/facebookresearch/ImageBind).[m[41m [m
+[32m+[m
+[32m+[m[32m## Download Learnable Weights[m
+[32m+[m[32mUse `git-lfs` to download the learnable weights of our Video-LLaMA (i.e., positional embedding layer + Q-Former + linear projection layer):[m
+[32m+[m[32m```bash[m
+[32m+[m[32mgit lfs install[m
+[32m+[m[32mgit clone https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series[m
+[32m+[m[32m```[m
+[32m+[m[32mThe above commands will download the model weights of all the Video-LLaMA variants. For sure, you can choose to download the weights on demand. For example, if you want to run Video-LLaMA with Vicuna-7B as language decoder locally, then:[m
+[32m+[m[32m```bash[m
+[32m+[m[32mwget https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune-vicuna7b-v2.pth[m
+[32m+[m[32mwget https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-Series/resolve/main/finetune_vicuna7b_audiobranch.pth[m
+[32m+[m[32m```[m
+[32m+[m[32mshould meet the requirement.[m
+ [m
+ ## How to Run Demo Locally[m
+ [m
+[31m-Firstly, set the `llama_model` (for the path to the language decoder), `imagebind_ckpt_path` (for the path to the audio encoder), `ckpt` (for the path to VL branch) and `ckpt_2` (for the path to AL branch) in [eval_configs/video_llama_eval_withaudio.yaml](./eval_configs/video_llama_eval_withaudio.yaml) accordingly.[m
+[32m+[m[32mFirstly, set the `llama_model`, `imagebind_ckpt_path`, `ckpt` and `ckpt_2` in [eval_configs/video_llama_eval_withaudio.yaml](./eval_configs/video_llama_eval_withaudio.yaml).[m
+ Then run the script:[m
+ ```[m
+ python demo_audiovideo.py \[m
+[36m@@ -135,7 +171,7 @@[m [mThe training of each cross-modal branch (i.e., VL branch or AL branch) in Video-[m
+ [m
+ ### 1. Pre-training[m
+ #### Data Preparation[m
+[31m-Download the metadata and video following the instructions from the official Github repo of [Webvid](https://github.com/m-bain/webvid).[m
+[32m+[m[32mDownload the metadata and video following the instruction from the official Github repo of [Webvid](https://github.com/m-bain/webvid).[m
+ The folder structure of the dataset is shown below:[m
+ ```[m
+ |webvid_train_data[m
+[36m@@ -153,14 +189,11 @@[m [mThe folder structure of the dataset is shown below:[m
+ |────...[m
+ ```[m
+ #### Script[m
+[31m-Config the checkpoint and dataset paths in [visionbranch_stage1_pretrain.yaml](./train_configs/visionbranch_stage1_pretrain.yaml) and [audiobranch_stage1_pretrain.yaml](audiobranch_stage1_pretrain.yaml) respectively. Then, run the script:[m
+[32m+[m[32mConfig the the checkpoint and dataset paths in [video_llama_stage1_pretrain.yaml](./train_configs/video_llama_stage1_pretrain.yaml).[m
+[32m+[m[32mRun the script:[m
+ ```[m
+ conda activate videollama[m
+[31m-# for pre-training VL branch[m
+[31m-torchrun --nproc_per_node=8 train.py --cfg-path  ./train_configs/audiobranch_stage1_pretrain.yaml[m
+[31m-[m
+[31m-# for pre-training AL branch[m
+[31m-torchrun --nproc_per_node=8 train.py --cfg-path  ./train_configs/audiobranch_stage1_pretrain.yaml[m
+[32m+[m[32mtorchrun --nproc_per_node=8 train.py --cfg-path  ./train_configs/video_llama_stage1_pretrain.yaml[m
+ ```[m
+ [m
+ ### 2. Instruction Fine-tuning[m
+[36m@@ -171,14 +204,10 @@[m [mFor now, the fine-tuning dataset consists of:[m
+ * 11K video-based instructions from VideoChat [[link](https://github.com/OpenGVLab/InternVideo/tree/main/Data/instruction_data)][m
+ [m
+ #### Script[m
+[31m-Config the checkpoint and dataset paths in [visionbranch_stage2_pretrain.yaml](./train_configs/visionbranch_stage2_pretrain.yaml) and [audiobranch_stage2_pretrain.yaml](audiobranch_stage2_pretrain.yaml) respectively. Then, run the following script:[m
+[32m+[m[32mConfig the checkpoint and dataset paths in [video_llama_stage2_finetune.yaml](./train_configs/video_llama_stage2_finetune.yaml).[m
+ ```[m
+ conda activate videollama[m
+[31m-# for fine-tuning VL branch[m
+[31m-torchrun --nproc_per_node=8 train.py --cfg-path  ./train_configs/visionbranch_stage2_finetune.yaml[m
+[31m-[m
+[31m-# for fine-tuning AL branch[m
+[31m-torchrun --nproc_per_node=8 train.py --cfg-path  ./train_configs/audiobranch_stage2_finetune.yaml[m
+[32m+[m[32mtorchrun --nproc_per_node=8 train.py --cfg-path  ./train_configs/video_llama_stage2_finetune.yaml[m
+ ```[m
+ [m
+ ## Recommended GPUs[m
+[1mdiff --git a/demo_audiovideo.py b/demo_audiovideo.py[m
+[1mindex 45d21f4..decee41 100644[m
+[1m--- a/demo_audiovideo.py[m
+[1m+++ b/demo_audiovideo.py[m
+[36m@@ -59,20 +59,16 @@[m [mdef setup_seeds(config):[m
+ [m
+ print('Initializing Chat')[m
+ args = parse_args()[m
+[31m-[m
+ cfg = Config(args)[m
+ [m
+ model_config = cfg.model_cfg[m
+ model_config.device_8bit = args.gpu_id[m
+ model_cls = registry.get_model_class(model_config.arch)[m
+[31m-[m
+[31m-# o problema[m
+[31m-model = model_cls.from_config(model_config).to('cuda:{}'.format(args.gpu_id))[m
+[31m-[m
+[32m+[m[32mmodel = model_cls.from_config(model_config).to('cpu')[m
+ model.eval()[m
+ vis_processor_cfg = cfg.datasets_cfg.webvid.vis_processor.train[m
+ vis_processor = registry.get_processor_class(vis_processor_cfg.name).from_config(vis_processor_cfg)[m
+[31m-chat = Chat(model, vis_processor, device='cuda:{}'.format(args.gpu_id))[m
+[32m+[m[32mchat = Chat(model, vis_processor, device='cpu')[m
+ print('Initialization Finished')[m
+ [m
+ # ========================================[m
+[1mdiff --git a/eval_configs/video_llama_eval_only_vl.yaml b/eval_configs/video_llama_eval_only_vl.yaml[m
+[1mindex efd95ea..6e9304a 100644[m
+[1m--- a/eval_configs/video_llama_eval_only_vl.yaml[m
+[1m+++ b/eval_configs/video_llama_eval_only_vl.yaml[m
+[36m@@ -12,10 +12,11 @@[m [mmodel:[m
+   # If you want use LLaMA-2-chat,[m
+   # some ckpts could be download from our provided huggingface repo[m
+   # i.e.  https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Finetuned[m
+[31m-  llama_model: huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-2-7B-Pretrained/snapshots/ckpt #"ckpt/vicuna-7b/" or  "ckpt/vicuna-13b/" or  "ckpt/llama-2-7b-chat-hf"  or "ckpt/llama-2-13b-chat-hf"[m
+[31m-  ckpt: huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-Series/snapshots/path/pretrain_vicuna7b-v2.pth #'path/pretrained_visual_branch_ckpt'   # you can use our pretrained ckpt from https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Pretrained/[m
+[32m+[m[32m  llama_model: "ckpt/vicuna-13b/" or "ckpt/vicuna-7b/" or "ckpt/llama-2-7b-chat-hf"  or "ckpt/llama-2-13b-chat-hf"[m
+[32m+[m[32m  ckpt: 'path/pretrained_visual_branch_ckpt'   # you can use our pretrained ckpt from https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Pretrained/[m
+   equip_audio_branch: False[m
+ [m
+[32m+[m[32m  equip_audio_branch: True  # whether equips the audio branch[m
+   fusion_head_layers: 2[m
+   max_frame_pos: 32[m
+   fusion_header_type: "seqTransf"[m
+[1mdiff --git a/eval_configs/video_llama_eval_withaudio.yaml b/eval_configs/video_llama_eval_withaudio.yaml[m
+[1mindex ef82bf0..5b8a15d 100644[m
+[1m--- a/eval_configs/video_llama_eval_withaudio.yaml[m
+[1m+++ b/eval_configs/video_llama_eval_withaudio.yaml[m
+[36m@@ -1,26 +1,3 @@[m
+[31m-# model:[m
+[31m-#   arch: video_llama[m
+[31m-#   model_type: pretrain_vicuna[m
+[31m-#   freeze_vit: True[m
+[31m-#   freeze_qformer: True[m
+[31m-#   max_txt_len: 512[m
+[31m-#   end_sym: "###"[m
+[31m-#   low_resource: False[m
+[31m-[m
+[31m-#   frozen_llama_proj: False[m
+[31m-[m
+[31m-#   # If you want use LLaMA-2-chat,[m
+[31m-#   # some ckpts could be download from our provided huggingface repo[m
+[31m-#   # i.e.  https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Finetuned[m
+[31m-#   llama_model: "ckpt/vicuna-13b/" or "ckpt/vicuna-7b/" or "ckpt/llama-2-7b-chat-hf"  or "ckpt/llama-2-13b-chat-hf"[m
+[31m-#   imagebind_ckpt_path: "ckpt/imagebind_path/"[m
+[31m-#   ckpt: 'path/pretrained_visual_branch_ckpt'   # you can use our pretrained ckpt from https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Pretrained/[m
+[31m-#   ckpt_2:  'path/pretrained_audio_branch_ckpt'[m
+[31m-[m
+[31m-#   equip_audio_branch: True  # whether equips the audio branch[m
+[31m-#   fusion_head_layers: 2[m
+[31m-#   max_frame_pos: 32[m
+[31m-#   fusion_header_type: "seqTransf"[m
+ model:[m
+   arch: video_llama[m
+   model_type: pretrain_vicuna[m
+[36m@@ -29,12 +6,18 @@[m [mmodel:[m
+   max_txt_len: 512[m
+   end_sym: "###"[m
+   low_resource: False[m
+[32m+[m
+   frozen_llama_proj: False[m
+[31m-  llama_model: huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-2-7B-Pretrained/snapshots/ckpt/llama-2-7b-chat-hf # "ckpt/llama-2-7b-chat-hf"  ou "ckpt/vicuna-13b/"  ou "ckpt/llama-2-13b-chat-hf"[m
+[31m-  imagebind_ckpt_path: "huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-2-7B-Pretrained/snapshots/ckpt"[m
+[31m-  ckpt: huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-2-7B-Pretrained/snapshots/ckpt/VL_LLaMA_2_7B_Pretrained.pth # Video-LLaMA/huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-Series/snapshots/path/pretrain_vicuna7b-v2.pth #'path/pretrained_visual_branch_ckpt'[m
+[31m-  ckpt_2: huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-2-7B-Pretrained/snapshots/ckpt/AL_LLaMA_2_7B_Pretrained.pth #huggingface/hub/models--DAMO-NLP-SG--Video-LLaMA-Series/snapshots/path/pretrain_vicuna7b_audiobranch.pth #'path/pretrained_audio_branch_ckpt'[m
+[31m-  equip_audio_branch: True[m
+[32m+[m
+[32m+[m[32m  # If you want use LLaMA-2-chat,[m
+[32m+[m[32m  # some ckpts could be download from our provided huggingface repo[m
+[32m+[m[32m  # i.e.  https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Finetuned[m
+[32m+[m[32m  llama_model: "ckpt/vicuna-13b/" or "ckpt/vicuna-7b/" or "ckpt/llama-2-7b-chat-hf"  or "ckpt/llama-2-13b-chat-hf"[m
+[32m+[m[32m  imagebind_ckpt_path: "ckpt/imagebind_path/"[m
+[32m+[m[32m  ckpt: 'path/pretrained_visual_branch_ckpt'   # you can use our pretrained ckpt from https://huggingface.co/DAMO-NLP-SG/Video-LLaMA-2-13B-Pretrained/[m
+[32m+[m[32m  ckpt_2:  'path/pretrained_audio_branch_ckpt'[m
+[32m+[m
+[32m+[m[32m  equip_audio_branch: True  # whether equips the audio branch[m
+   fusion_head_layers: 2[m
+   max_frame_pos: 32[m
+   fusion_header_type: "seqTransf"[m
+[1mdiff --git a/files.py b/files.py[m
+[1mdeleted file mode 100644[m
+[1mindex 6a773ee..0000000[m
+[1m--- a/files.py[m
+[1m+++ /dev/null[m
+[36m@@ -1,22 +0,0 @@[m
+[31m-#!/usr/bin/env python3[m
+[31m-from huggingface_hub import hf_hub_download[m
+[31m-[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-Series", filename="pretrain_vicuna7b_audiobranch.pth")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-Series", filename="pretrain_vicuna7b-v2.pth")[m
+[31m-[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/.gitattributes")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/README.md")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/config.json")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/generation_config.json")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/pytorch_model-00001-of-00002.bin")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/pytorch_model-00002-of-00002.bin")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/pytorch_model.bin.index.json")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/special_tokens_map.json")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/tokenizer.json")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/tokenizer.model")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="llama-2-7b-chat-hf/tokenizer_config.json")[m
+[31m-[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="imagebind_huge.pth")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="AL_LLaMA_2_7B_Pretrained.pth")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename="VL_LLaMA_2_7B_Pretrained.pth")[m
+[31m-hf_hub_download(repo_id="DAMO-NLP-SG/Video-LLaMA-2-7B-Pretrained", filename=".gitattributes")[m
+[1mdiff --git a/video_llama/datasets/builders/instruct_builder.py b/video_llama/datasets/builders/instruct_builder.py[m
+[1mindex 09046a1..b952387 100644[m
+[1m--- a/video_llama/datasets/builders/instruct_builder.py[m
+[1m+++ b/video_llama/datasets/builders/instruct_builder.py[m
+[36m@@ -45,8 +45,7 @@[m [mclass Instruct_Builder(BaseDatasetBuilder):[m
+             ann_root=build_info.anno_dir,[m
+             num_video_query_token = num_video_query_token,[m
+             tokenizer_name = tokenizer_name,[m
+[31m-            data_type = self.config.data_type,[m
+[31m-            model_type = self.config.model_type[m
+[32m+[m[32m            data_type = self.config.data_type[m
+         )[m
+ [m
+         return datasets[m
+[1mdiff --git a/video_llama/datasets/datasets/video_instruct_dataset.py b/video_llama/datasets/datasets/video_instruct_dataset.py[m
+[1mindex 7f54be8..d6e8737 100644[m
+[1m--- a/video_llama/datasets/datasets/video_instruct_dataset.py[m
+[1m+++ b/video_llama/datasets/datasets/video_instruct_dataset.py[m
+[36m@@ -231,7 +231,7 @@[m [mdef _tokenize_fn(strings: Sequence[str],[m
+         labels_lens=labels_lens,[m
+     )[m
+ [m
+[31m-def preprocess([m
+[32m+[m[32mdef preprocess_for_llama_v2([m
+     sources: Sequence[str],[m
+     tokenizer: transformers.PreTrainedTokenizer,[m
+ ) -> Dict:[m
+[36m@@ -260,7 +260,7 @@[m [mdef preprocess([m
+ [m
+     return dict(input_ids=input_ids, labels=targets)[m
+ [m
+[31m-def preprocess_for_llama_v2([m
+[32m+[m[32mdef preprocess([m
+     sources: Sequence[str],[m
+     tokenizer: transformers.PreTrainedTokenizer,[m
+ ) -> Dict:[m
+[36m@@ -273,7 +273,7 @@[m [mdef preprocess_for_llama_v2([m
+     """[m
+     # add end signal and concatenate together[m
+     conversations = [][m
+[31m-    conv = copy.deepcopy(llama_v2_video_conversation.copy())[m
+[32m+[m[32m    conv = copy.deepcopy(video_conversation.copy())[m
+     roles = {"human": conv.roles[0], "gpt": conv.roles[1]}[m
+     for source in sources:[m
+         # <s>[INST] <<SYS>>\n{system_prompt}\n<</SYS>>\n\n[m
+[1mdiff --git a/video_llama/models/video_llama.py b/video_llama/models/video_llama.py[m
+[1mindex 70e40c8..643f006 100644[m
+[1m--- a/video_llama/models/video_llama.py[m
+[1m+++ b/video_llama/models/video_llama.py[m
+[36m@@ -156,7 +156,7 @@[m [mclass VideoLLAMA(Blip2Base):[m
+         if llama_proj_model:[m
+             print("load llama proj weight: {}".format(llama_proj_model))[m
+             llama_proj_weight = torch.load(llama_proj_model, map_location="cpu")[m
+[31m-            msg = self.load_state_dict(llama_proj_weight['model'], strict=False)[m
+[32m+[m[32m            msg = model.load_state_dict(llama_proj_weight['model'], strict=False)[m
+ [m
+         if frozen_llama_proj:[m
+             #  todo frozen  llama_proj[m
+[36m@@ -597,8 +597,7 @@[m [mclass VideoLLAMA(Blip2Base):[m
+             num_video_query_token=num_video_query_token,[m
+             num_audio_query_token = num_audio_query_token,[m
+             imagebind_ckpt_path = imagebind_ckpt_path,[m
+[31m-            equip_audio_branch = equip_audio_branch,[m
+[31m-            llama_proj_model = llama_proj_model[m
+[32m+[m[32m            equip_audio_branch = equip_audio_branch[m
+         )[m
+ [m
+         ckpt_path = cfg.get("ckpt", "")  # load weights of MiniGPT-4[m
