@@ -231,7 +231,7 @@ def _tokenize_fn(strings: Sequence[str],
         labels_lens=labels_lens,
     )
 
-def preprocess(
+def preprocess_for_llama_v2(
     sources: Sequence[str],
     tokenizer: transformers.PreTrainedTokenizer,
 ) -> Dict:
@@ -260,7 +260,7 @@ def preprocess(
 
     return dict(input_ids=input_ids, labels=targets)
 
-def preprocess_for_llama_v2(
+def preprocess(
     sources: Sequence[str],
     tokenizer: transformers.PreTrainedTokenizer,
 ) -> Dict:
@@ -273,7 +273,7 @@ def preprocess_for_llama_v2(
     """
     # add end signal and concatenate together
     conversations = []
-    conv = copy.deepcopy(llama_v2_video_conversation.copy())
+    conv = copy.deepcopy(video_conversation.copy())
     roles = {"human": conv.roles[0], "gpt": conv.roles[1]}
     for source in sources:
         # <s>[INST] <<SYS>>\n{system_prompt}\n<</SYS>>\n\n

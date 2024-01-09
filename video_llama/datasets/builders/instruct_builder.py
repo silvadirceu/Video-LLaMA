@@ -45,8 +45,7 @@ class Instruct_Builder(BaseDatasetBuilder):
             ann_root=build_info.anno_dir,
             num_video_query_token = num_video_query_token,
             tokenizer_name = tokenizer_name,
-            data_type = self.config.data_type,
-            model_type = self.config.model_type
+            data_type = self.config.data_type
         )
 
         return datasets
