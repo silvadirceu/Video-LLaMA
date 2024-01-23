@@ -83,12 +83,26 @@ def apply_to_sample(f, sample):
 def move_to_cuda(sample):
     def _move_to_cuda(tensor):
         return tensor.cuda()
+    def _move_to_cpu(tensor):
+        return tensor.cpu()
+    
+    if is_cuda_available():
+        return apply_to_sample(_move_to_cuda, sample)
 
-    return apply_to_sample(_move_to_cuda, sample)
+    return apply_to_sample(_move_to_cpu, sample)
 
+def select_device():
+    if torch.cuda.is_available():
+        device = torch.device("cuda")
+    else:
+        device = torch.device("cpu")
+    return device
+
+def is_cuda_available():
+    return torch.cuda.is_available()
 
 def prepare_sample(samples, cuda_enabled=True):
-    if cuda_enabled:
+    if cuda_enabled and is_cuda_available():
         samples = move_to_cuda(samples)
 
     # TODO fp16 support

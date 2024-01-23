@@ -8,7 +8,7 @@
 import time
 import random
 import torch
-from video_llama.datasets.data_utils import move_to_cuda
+from video_llama.datasets.data_utils import is_cuda_available, move_to_cuda
 from torch.utils.data import DataLoader
 
 
@@ -53,7 +53,10 @@ class PrefetchLoader(object):
 
     def __init__(self, loader):
         self.loader = loader
-        self.stream = torch.cuda.Stream()
+        if is_cuda_available():
+            self.stream = torch.cuda.Stream()
+        else:
+            self.stream = torch.cpu.Stream()
 
     def __iter__(self):
         loader_it = iter(self.loader)
@@ -88,8 +91,12 @@ class PrefetchLoader(object):
         # Need to make sure the memory allocated for next_* is not still in use
         # by the main stream at the time we start copying to next_*:
         # self.stream.wait_stream(torch.cuda.current_stream())
-        with torch.cuda.stream(self.stream):
-            self.batch = move_to_cuda(self.batch)
+        if is_cuda_available():
+            with torch.cuda.stream(self.stream):
+                self.batch = move_to_cuda(self.batch)
+        else:
+            with torch.cpu.stream(self.stream):
+                self.batch = move_to_cuda(self.batch)
             # more code for the alternative if record_stream() doesn't work:
             # copy_ will record the use of the pinned source tensor in this
             # side stream.
@@ -99,7 +106,10 @@ class PrefetchLoader(object):
             # self.next_target = self.next_target_gpu
 
     def next(self, it):
-        torch.cuda.current_stream().wait_stream(self.stream)
+        if is_cuda_available():
+            torch.cuda.current_stream().wait_stream(self.stream)
+        else:
+            torch.cpu.current_stream().wait_stream(self.stream)
         batch = self.batch
         if batch is not None:
             record_cuda_stream(batch)
@@ -110,10 +120,12 @@ class PrefetchLoader(object):
         method = self.loader.__getattribute__(name)
         return method
 
-
 def record_cuda_stream(batch):
     if isinstance(batch, torch.Tensor):
-        batch.record_stream(torch.cuda.current_stream())
+        if is_cuda_available:
+            batch.record_stream(torch.cuda.current_stream())
+        else:
+            batch.record_stream(torch.cpu.current_stream())
     elif isinstance(batch, list) or isinstance(batch, tuple):
         for t in batch:
             record_cuda_stream(t)
@@ -122,7 +134,6 @@ def record_cuda_stream(batch):
             record_cuda_stream(t)
     else:
         pass
-
 
 class IterLoader:
     """

@@ -24,7 +24,7 @@ from video_llama.common.dist_utils import (
 )
 from video_llama.common.registry import registry
 from video_llama.common.utils import is_url
-from video_llama.datasets.data_utils import concat_datasets, reorg_datasets_by_split, ChainDataset
+from video_llama.datasets.data_utils import concat_datasets, is_cuda_available, reorg_datasets_by_split, ChainDataset
 from video_llama.datasets.datasets.dataloader_utils import (
     IterLoader,
     MultiIterLoader,
@@ -134,8 +134,11 @@ class RunnerBase:
 
         if amp:
             if self._scaler is None:
-                self._scaler = torch.cuda.amp.GradScaler()
-
+                if is_cuda_available():
+                    self._scaler = torch.cuda.amp.GradScaler()
+                else:
+                    self._scaler = torch.cpu.amp.GradScaler()
+                
         return self._scaler
 
     @property

@@ -30,7 +30,7 @@ def parse_args():
     parser = argparse.ArgumentParser(description="Demo")
     parser.add_argument("--cfg-path", default='eval_configs/video_llama_eval_withaudio.yaml', help="path to configuration file.")
     parser.add_argument("--gpu-id", type=int, default=0, help="specify the gpu to load the model.")
-    parser.add_argument("--model_type", type=str, default='vicuna', help="The type of LLM")
+    parser.add_argument("--model_type", type=str, default='llama_v2', help="The type of LLM")
     parser.add_argument(
         "--options",
         nargs="+",
@@ -83,33 +83,31 @@ def gradio_reset(chat_state, img_list):
         img_list = []
     return None, gr.update(value=None, interactive=True), gr.update(value=None, interactive=True), gr.update(placeholder='Please upload your video first', interactive=False),gr.update(value="Upload & Start Chat", interactive=True), chat_state, img_list
 
-def upload_imgorvideo(gr_video, gr_img, text_input, chat_state,chatbot,audio_flag):
+def upload_imgorvideo(gr_video, gr_img, text_input, chat_state, chatbot, audio_flag):
     if args.model_type == 'vicuna':
         chat_state = default_conversation.copy()
     else:
         chat_state = conv_llava_llama_2.copy()
-    if gr_img is None and gr_video is None:
-        return None, None, None, gr.update(interactive=True), chat_state, None
-    elif gr_img is not None and gr_video is None:
-        print(gr_img)
-        chatbot = chatbot + [((gr_img,), None)]
-        chat_state.system =  "You are able to understand the visual content that the user provides. Follow the instructions carefully and explain your answers in detail."
+
+    if gr_img is not None and gr_video is None:
+        print("Image Path:", gr_img)  # Debugging
+        chatbot.append(((gr_img,), None))
+        chat_state.system = "You are able to understand the visual content that the user provides. Follow the instructions carefully and explain your answers in detail."
         img_list = []
         llm_message = chat.upload_img(gr_img, chat_state, img_list)
-        return gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=True, placeholder='Type and press Enter'), gr.update(value="Start Chatting", interactive=False), chat_state, img_list,chatbot
+        return gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=True, placeholder='Type and press Enter'), gr.update(value="Start Chatting", interactive=False), chat_state, img_list, chatbot
     elif gr_video is not None and gr_img is None:
-        print(gr_video)
-        chatbot = chatbot + [((gr_video,), None)]
-        chat_state.system =  ""
+        print("Video Path:", gr_video)  # Debugging
+        chatbot.append(((gr_video,), None))
+        chat_state.system = ""
         img_list = []
         if audio_flag:
             llm_message = chat.upload_video(gr_video, chat_state, img_list)
         else:
             llm_message = chat.upload_video_without_audio(gr_video, chat_state, img_list)
-        return gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=True, placeholder='Type and press Enter'), gr.update(value="Start Chatting", interactive=False), chat_state, img_list,chatbot
+        return gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=True, placeholder='Type and press Enter'), gr.update(value="Start Chatting", interactive=False), chat_state, img_list, chatbot
     else:
-        # img_list = []
-        return gr.update(interactive=False), gr.update(interactive=False, placeholder='Currently, only one input is supported'), gr.update(value="Currently, only one input is supported", interactive=False), chat_state, None,chatbot
+        return gr.update(interactive=False), gr.update(interactive=False, placeholder='Currently, only one input is supported'), gr.update(value="Currently, only one input is supported", interactive=False), chat_state, None, chatbot
 
 def gradio_ask(user_message, chatbot, chat_state):
     if len(user_message) == 0:
@@ -245,7 +243,7 @@ with gr.Blocks() as demo:
     )
     clear.click(gradio_reset, [chat_state, img_list], [chatbot, video, image, text_input, upload_button, chat_state, img_list], queue=False)
     
-demo.launch(share=False, enable_queue=True)
+demo.launch(share=False)
 
 
 # %%
